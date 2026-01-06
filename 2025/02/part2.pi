@@ -2,13 +2,16 @@ import util.
 
 parse_id_range(Range) = map(to_number, split(Range, "-")).
 
+repeated(_, []) => true.
+repeated(X, Xs) =>
+    append(X, Ys, Xs),
+    X != [],
+    repeated(X, Ys).
+
 invalid_id(Id) =>
     Id := to_string(Id),
-    between(2, len(Id), N),
-    len(Id) mod N = 0,
-    append(X, _, Id),
-    len(X) * N = len(Id),
-    flatten(new_list(N, X)) = Id.
+    repeated(X, Id),
+    X != Id.
 
 run([File]) = SumInvalid =>
     Ids = map(parse_id_range, split(rstrip(read_file_chars(File)), ",")),
