@@ -1,0 +1,32 @@
+digits_to_number(Ds) = digits_to_number(Ds, 0).
+
+digits_to_number([], N) = N.
+digits_to_number([D | Ds], N) = digits_to_number(Ds, N * 10 + D).
+
+shift_max_left([]) = [].
+shift_max_left([M]) = [M].
+shift_max_left([X, Y | M]) = Xs, Y @> X => Xs = [Y | M] ++ [0].
+shift_max_left([X, Y | M]) = [X | shift_max_left([Y | M])].
+
+max_joltage(Bank) = digits_to_number(max_joltage(Bank, new_list(12, 0))).
+
+max_joltage([], Maxes) = Maxes.
+max_joltage([Battery | Bank], Maxes) = Maxes_ =>
+    Maxes := shift_max_left(Maxes),
+    if (Battery @> Maxes[12])
+        Maxes[12] := Battery
+    end,
+    Maxes_ = max_joltage(Bank, Maxes).
+
+run([File]) = Joltage =>
+    Banks = [[to_number(Battery): Battery in Bank]: Bank in read_file_lines(File)],
+    Joltage = sum([max_joltage(Bank): Bank in Banks]).
+
+main =>
+    Joltage = run(["input.txt"]),
+    println(Joltage).
+
+test =>
+    Joltage = run(["test.txt"]),
+    println(Joltage),
+    Joltage = 3121910778619.
