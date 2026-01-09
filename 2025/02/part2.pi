@@ -20,9 +20,9 @@ run([File]) = SumInvalid =>
 
 main =>
     SumInvalid = run(["input.txt"]),
-    writeln(SumInvalid).
+    println(SumInvalid).
 
 test =>
     SumInvalid = run(["test.txt"]),
-    writeln(SumInvalid),
+    println(SumInvalid),
     SumInvalid = 4174379265.
