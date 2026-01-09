@@ -1,5 +1,5 @@
-parse_turn(['L' | Turn]) = Val => Val = -to_number(Turn).
-parse_turn(['R' | Turn]) = Val => Val = to_number(Turn).
+parse_turn(['L' | Turn]) = -to_number(Turn).
+parse_turn(['R' | Turn]) = to_number(Turn).
 
 run([File]) = Password =>
     Turns = map(parse_turn, read_file_lines(File)),
