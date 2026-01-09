@@ -1,0 +1,34 @@
+roll(Map, R, C) => Map[R, C] = '@'.
+
+neighbor(Map, R1, C1, R2, C2) =>
+    between(max(R1 - 1, 1), min(R1 + 1, len(Map)), R2),
+    between(max(C1 - 1, 1), min(C1 + 1, len(Map[R1])), C2),
+    once (R1 !== R2 || C1 !== C2).
+
+forklift(Map, R, C) =>
+    between(1, len(Map), R),
+    between(1, len(Map[R]), C),
+    roll(Map, R, C),
+    count_all((neighbor(Map, R, C, Rn, Cn) && roll(Map, Rn, Cn))) < 4.
+
+run([File]) = NRolls =>
+    Map = {to_array(Line): Line in read_file_lines(File)},
+    NRolls = 0,
+    NRollsToRemove = 0,
+    do
+        Rolls = find_all((R, C), forklift(Map, R, C)),
+        NRollsToRemove := len(Rolls),
+        NRolls := NRolls + NRollsToRemove,
+        foreach ((R, C) in Rolls)
+            Map[R, C] := '.'
+        end
+    while (NRollsToRemove > 0).
+
+main =>
+    NRolls = run(["input.txt"]),
+    println(NRolls).
+
+test =>
+    NRolls = run(["test.txt"]),
+    println(NRolls),
+    NRolls = 43.
