@@ -17,9 +17,9 @@ run([File]) = Password =>
 
 main =>
     Password = run(["input.txt"]),
-    writeln(Password).
+    println(Password).
 
 test =>
     Password = run(["test.txt"]),
-    writeln(Password),
+    println(Password),
     Password = 6.
