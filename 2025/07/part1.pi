@@ -1,0 +1,27 @@
+include "../aoc.pi".
+
+table
+beam(Manifold, 1, C) => Manifold[1, C] = 'S'.
+beam(Manifold, R, C) ?=>
+    Manifold[R, C] = '.',
+    beam(Manifold, R - 1, C).
+beam(Manifold, R, C) ?=>
+    C - 1 @> 0,
+    Manifold[R, C] = '.',
+    Manifold[R, C - 1] = '^' ,
+    beam(Manifold, R - 1, C - 1).
+beam(Manifold, R, C) ?=>
+    C + 1 @<= len(Manifold[R]),
+    Manifold[R, C] = '.',
+    Manifold[R, C + 1] = '^',
+    beam(Manifold, R - 1, C + 1).
+
+split(Manifold, R, C), R @> 1 =>
+    Manifold[R, C] = '^',
+    beam(Manifold, R - 1, C).
+
+run(File) = NSplits =>
+    Manifold = {to_array(Line): Line in read_file_lines(File)},
+    NSplits = len([_: R in 2 .. len(Manifold), C in 1 .. len(Manifold[R]), split(Manifold, R, C)]).
+
+test_expected = 21.
