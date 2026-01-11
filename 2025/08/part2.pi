@@ -1,0 +1,41 @@
+import util.
+include "../aoc.pi".
+
+dist_sqr({X1, Y1, Z1}, {X2, Y2, Z2}) =
+    (X1 - X2) ** 2 + (Y1 - Y2) ** 2 + (Z1 - Z2) ** 2.
+
+all_connected(Circuits) =>
+    AllPts = keys(Circuits),
+    once member(Pt, AllPts),
+    size(get(Circuits, Pt)) = len(AllPts).
+
+connect(Dists, Circuits) = (LastPt1, LastPt2) =>
+    (LastPt1, LastPt2) = (LastPt1, LastPt2),
+    foreach ({Pt1, Pt2, _} in Dists, break(all_connected(Circuits)))
+        Circuit1 = get(Circuits, Pt1),
+        Circuit2 = get(Circuits, Pt2),
+        foreach (Pt in keys(Circuit2))
+            put(Circuit1, Pt)
+        end,
+        foreach (Pt in keys(Circuit1))
+            put(Circuits, Pt, Circuit1)
+        end,
+        LastPt1 := Pt1,
+        LastPt2 := Pt2
+    end.
+
+run(File) = Result =>
+    Points = {{to_number(V): V in split(Line, ",")}: Line in read_file_lines(File)},
+    Dists = [
+        {Pt1, Pt2, dist_sqr(Pt1, Pt2)}:
+        I in 1 .. len(Points) - 1,
+        J in I + 1 .. len(Points),
+        Pt1 = Points[I],
+        Pt2 = Points[J]
+    ],
+    Dists := sort(Dists, 3),
+    Circuits = new_map([Pt = new_set([Pt]): Pt in Points]),
+    ({LastX1, _, _}, {LastX2, _, _}) = connect(Dists, Circuits),
+    Result = LastX1 * LastX2.
+
+test_expected = 25272.
