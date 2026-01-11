@@ -1,0 +1,14 @@
+import util.
+include "../aoc.pi".
+
+run(File) = Area =>
+    Pts = [[to_number(V): V in split(Line, ",")]: Line in read_file_lines(File)],
+    Area = max([
+        (abs(X1 - X2) + 1) * (abs(Y1 - Y2) + 1):
+        I in 1 .. len(Pts) - 1,
+        J in I + 1 .. len(Pts),
+        [X1, Y1] = Pts[I],
+        [X2, Y2] = Pts[J]
+    ]).
+
+test_expected = 50.
