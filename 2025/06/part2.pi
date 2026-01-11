@@ -1,0 +1,24 @@
+import util.
+
+split_columns(Lines) = Columns =>
+    MaxLine = max([len(Line): Line in Lines]),
+    Lines := [Line ++ new_list(MaxLine - len(Line), ' '): Line in Lines],
+    Columns = columns(Lines),
+    Blank = new_list(len(Lines), ' '),
+    Columns := split(Columns, [Blank]).
+
+run([File]) = Total =>
+    once append(ValLines, [Ops], read_file_lines(File)),
+    ValCols = [[to_number(Val): Val in Vals]: Vals in split_columns(ValLines)],
+    Ops := split(Ops),
+    Sols = [reduce(Op, Vals): {[Op], Vals} in zip(Ops, ValCols)],
+    Total = sum(Sols).
+
+main =>
+    Total = run(["input.txt"]),
+    println(Total).
+
+test =>
+    Total = run(["test.txt"]),
+    println(Total),
+    Total = 3263827.
