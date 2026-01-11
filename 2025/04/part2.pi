@@ -1,3 +1,5 @@
+include "../aoc.pi".
+
 roll(Map, R, C) => Map[R, C] = '@'.
 
 neighbor(Map, R1, C1, R2, C2) =>
@@ -24,11 +26,4 @@ run(File) = NRolls =>
         end
     while (NRollsToRemove > 0).
 
-main =>
-    NRolls = run("input.txt"),
-    println(NRolls).
-
-test =>
-    NRolls = run("test.txt"),
-    println(NRolls),
-    NRolls = 43.
+test_expected = 43.

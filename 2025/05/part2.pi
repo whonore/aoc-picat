@@ -1,4 +1,5 @@
 import util.
+include "../aoc.pi".
 
 parse_range(Range) = (Start, End) =>
     [Start, End] = [to_number(V): V in split(Range, "-")].
@@ -19,11 +20,4 @@ run(File) = NFresh =>
     Ranges := merge_ranges(sort([parse_range(Range): Range in Ranges])),
     NFresh = sum([End - Start + 1: (Start, End) in Ranges]).
 
-main =>
-    NFresh = run("input.txt"),
-    println(NFresh).
-
-test =>
-    NFresh = run("test.txt"),
-    println(NFresh),
-    NFresh = 14.
+test_expected = 14.

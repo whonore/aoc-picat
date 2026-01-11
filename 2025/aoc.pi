@@ -1,0 +1,8 @@
+main => println(run("input.txt")).
+
+test =>
+    Result = run("test.txt"),
+    Expected = test_expected(),
+    if (Result !== Expected)
+        throw $error($expected(Expected), $got(Result))
+    end.

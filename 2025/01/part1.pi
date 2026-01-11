@@ -1,3 +1,5 @@
+include "../aoc.pi".
+
 parse_turn(['L' | Turn]) = -to_number(Turn).
 parse_turn(['R' | Turn]) = to_number(Turn).
 
@@ -12,11 +14,4 @@ run(File) = Password =>
         end
     end.
 
-main =>
-    Password = run("input.txt"),
-    println(Password).
-
-test =>
-    Password = run("test.txt"),
-    println(Password),
-    Password = 3.
+test_expected = 3.
