@@ -1,7 +1,7 @@
 parse_turn(['L' | Turn]) = -to_number(Turn).
 parse_turn(['R' | Turn]) = to_number(Turn).
 
-run([File]) = Password =>
+run(File) = Password =>
     Turns = map(parse_turn, read_file_lines(File)),
     Dial = 50,
     Password = 0,
@@ -16,10 +16,10 @@ run([File]) = Password =>
     end.
 
 main =>
-    Password = run(["input.txt"]),
+    Password = run("input.txt"),
     println(Password).
 
 test =>
-    Password = run(["test.txt"]),
+    Password = run("test.txt"),
     println(Password),
     Password = 6.

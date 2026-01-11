@@ -7,7 +7,7 @@ split_columns(Lines) = Columns =>
     Blank = new_list(len(Lines), ' '),
     Columns := split(Columns, [Blank]).
 
-run([File]) = Total =>
+run(File) = Total =>
     once append(ValLines, [Ops], read_file_lines(File)),
     ValCols = [[to_number(Val): Val in Vals]: Vals in split_columns(ValLines)],
     Ops := split(Ops),
@@ -15,10 +15,10 @@ run([File]) = Total =>
     Total = sum(Sols).
 
 main =>
-    Total = run(["input.txt"]),
+    Total = run("input.txt"),
     println(Total).
 
 test =>
-    Total = run(["test.txt"]),
+    Total = run("test.txt"),
     println(Total),
     Total = 3263827.

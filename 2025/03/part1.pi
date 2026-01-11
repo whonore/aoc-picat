@@ -12,15 +12,15 @@ max_joltage([Battery | Bank], Max1, Max2) = (Max1_, Max2_) =>
     end,
     (Max1_, Max2_) = max_joltage(Bank, Max1, Max2).
 
-run([File]) = Joltage =>
+run(File) = Joltage =>
     Banks = [[to_number(Battery): Battery in Bank]: Bank in read_file_lines(File)],
     Joltage = sum([max_joltage(Bank): Bank in Banks]).
 
 main =>
-    Joltage = run(["input.txt"]),
+    Joltage = run("input.txt"),
     println(Joltage).
 
 test =>
-    Joltage = run(["test.txt"]),
+    Joltage = run("test.txt"),
     println(Joltage),
     Joltage = 357.
