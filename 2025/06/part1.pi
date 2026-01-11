@@ -1,0 +1,21 @@
+import util.
+
+eval(Problem) = Sol =>
+    once append(Vals, [[Op]], Problem),
+    Vals := [to_number(Val): Val in Vals],
+    Sol = reduce(Op, Vals).
+
+run([File]) = Total =>
+    Worksheet = [split(Line, " "): Line in read_file_lines(File)],
+    Problems = columns(Worksheet),
+    Sols = [eval(Problem): Problem in Problems],
+    Total = sum(Sols).
+
+main =>
+    Total = run(["input.txt"]),
+    println(Total).
+
+test =>
+    Total = run(["test.txt"]),
+    println(Total),
+    Total = 4277556.
