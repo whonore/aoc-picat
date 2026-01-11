@@ -14,16 +14,16 @@ merge_ranges([(Start1, End1) | Ranges1], [(Start2, End2) | Ranges2]) = Ranges =>
         Ranges = merge_ranges(Ranges1, [(Start2, max(End1, End2)) | Ranges2])
     end.
 
-run([File]) = NFresh =>
+run(File) = NFresh =>
     [Ranges, _] = split(read_file_lines(File), [""],),
     Ranges := merge_ranges(sort([parse_range(Range): Range in Ranges])),
     NFresh = sum([End - Start + 1: (Start, End) in Ranges]).
 
 main =>
-    NFresh = run(["input.txt"]),
+    NFresh = run("input.txt"),
     println(NFresh).
 
 test =>
-    NFresh = run(["test.txt"]),
+    NFresh = run("test.txt"),
     println(NFresh),
     NFresh = 14.

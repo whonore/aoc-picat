@@ -11,7 +11,7 @@ forklift(Map, R, C) =>
     roll(Map, R, C),
     count_all((neighbor(Map, R, C, Rn, Cn) && roll(Map, Rn, Cn))) < 4.
 
-run([File]) = NRolls =>
+run(File) = NRolls =>
     Map = {to_array(Line): Line in read_file_lines(File)},
     Rolls = find_all((R, C), forklift(Map, R, C)),
     NRolls = len(Rolls).
@@ -19,10 +19,10 @@ run([File]) = NRolls =>
     % NRolls = count_all(forklift(Map, _, _)).
 
 main =>
-    NRolls = run(["input.txt"]),
+    NRolls = run("input.txt"),
     println(NRolls).
 
 test =>
-    NRolls = run(["test.txt"]),
+    NRolls = run("test.txt"),
     println(NRolls),
     NRolls = 13.

@@ -4,16 +4,16 @@ parse_id_range(Range) = map(to_number, split(Range, "-")).
 
 invalid_id(Id) => append(X, X, to_string(Id)).
 
-run([File]) = SumInvalid =>
+run(File) = SumInvalid =>
     Ids = map(parse_id_range, split(rstrip(read_file_chars(File)), ",")),
     InvalidIds = [Id : [Id1, Id2] in Ids, Id in (Id1 .. Id2), invalid_id(Id)],
     SumInvalid = sum(InvalidIds).
 
 main =>
-    SumInvalid = run(["input.txt"]),
+    SumInvalid = run("input.txt"),
     println(SumInvalid).
 
 test =>
-    SumInvalid = run(["test.txt"]),
+    SumInvalid = run("test.txt"),
     println(SumInvalid),
     SumInvalid = 1227775554.
