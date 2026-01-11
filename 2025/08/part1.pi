@@ -1,0 +1,45 @@
+import util.
+include "../aoc.pi".
+
+dist_sqr({X1, Y1, Z1}, {X2, Y2, Z2}) =
+    (X1 - X2) ** 2 + (Y1 - Y2) ** 2 + (Z1 - Z2) ** 2.
+
+connect(Dists) = connect(Dists, []).
+
+connect([], Circuits) = Circuits.
+connect([{Pt1, Pt2, _} | Dists], Circuits) = Circuits_ =>
+    Circuit = [Pt1, Pt2],
+    ToCheck = Circuit,
+    while (select(Pt1_, ToCheck, ToCheck_)),
+        while (select({Pt1_, Pt2_, _}, Dists, Dists_)),
+            Dists := Dists_,
+            Circuit := [Pt2_ | Circuit],
+            ToCheck_ := [Pt2_ | ToCheck_]
+        end,
+        while (select({Pt2_, Pt1_, _}, Dists, Dists_)),
+            Dists := Dists_,
+            Circuit := [Pt2_ | Circuit],
+            ToCheck_ := [Pt2_ | ToCheck_]
+        end,
+        ToCheck := ToCheck_,
+    end,
+    Circuit := remove_dups(Circuit),
+    Circuits_ = connect(Dists, [Circuit | Circuits]).
+
+run(File) = Result =>
+    NConnections = cond(File == "test.txt", 10, 1000),
+    Points = {{to_number(V): V in split(Line, ",")}: Line in read_file_lines(File)},
+    Dists = [
+        {Pt1, Pt2, dist_sqr(Pt1, Pt2)}:
+        I in 1 .. len(Points) - 1,
+        J in I + 1 .. len(Points),
+        Pt1 = Points[I],
+        Pt2 = Points[J]
+    ],
+    Dists := sort(Dists, 3),
+    Dists := take(Dists, NConnections),
+    Circuits = connect(Dists),
+    Circuits := sort_down([(Circuit, len(Circuit)): Circuit in Circuits], 2),
+    Result = prod([Size: (_, Size) in take(Circuits, 3)]).
+
+test_expected = 40.
