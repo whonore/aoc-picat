@@ -1,3 +1,5 @@
+include "../aoc.pi".
+
 digits_to_number(Ds) = digits_to_number(Ds, 0).
 
 digits_to_number([], N) = N.
@@ -22,11 +24,4 @@ run(File) = Joltage =>
     Banks = [[to_number(Battery): Battery in Bank]: Bank in read_file_lines(File)],
     Joltage = sum([max_joltage(Bank): Bank in Banks]).
 
-main =>
-    Joltage = run("input.txt"),
-    println(Joltage).
-
-test =>
-    Joltage = run("test.txt"),
-    println(Joltage),
-    Joltage = 3121910778619.
+test_expected = 3121910778619.

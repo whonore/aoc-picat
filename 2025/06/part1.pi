@@ -1,4 +1,5 @@
 import util.
+include "../aoc.pi".
 
 eval(Problem) = Sol =>
     once append(Vals, [[Op]], Problem),
@@ -11,11 +12,4 @@ run(File) = Total =>
     Sols = [eval(Problem): Problem in Problems],
     Total = sum(Sols).
 
-main =>
-    Total = run("input.txt"),
-    println(Total).
-
-test =>
-    Total = run("test.txt"),
-    println(Total),
-    Total = 4277556.
+test_expected = 4277556.

@@ -1,4 +1,5 @@
 import util.
+include "../aoc.pi".
 
 parse_range(Range) = (Start, End) =>
     [Start, End] = [to_number(V): V in split(Range, "-")].
@@ -13,11 +14,4 @@ run(File) = NFresh =>
     Fresh = [Id: Id in Ids, fresh(Ranges, to_number(Id))],
     NFresh = len(Fresh).
 
-main =>
-    NFresh = run("input.txt"),
-    println(NFresh).
-
-test =>
-    NFresh = run("test.txt"),
-    println(NFresh),
-    NFresh = 3.
+test_expected = 3.

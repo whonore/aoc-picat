@@ -1,3 +1,5 @@
+include "../aoc.pi".
+
 parse_turn(['L' | Turn]) = -to_number(Turn).
 parse_turn(['R' | Turn]) = to_number(Turn).
 
@@ -15,11 +17,4 @@ run(File) = Password =>
         Dial := NewDial mod 100,
     end.
 
-main =>
-    Password = run("input.txt"),
-    println(Password).
-
-test =>
-    Password = run("test.txt"),
-    println(Password),
-    Password = 6.
+test_expected = 6.
