@@ -1,0 +1,29 @@
+import util.
+
+parse_range(Range) = (Start, End) =>
+    [Start, End] = [to_number(V): V in split(Range, "-")].
+
+merge_ranges(Ranges) = merge_ranges(Ranges, []).
+
+merge_ranges([], Ranges) = Ranges.
+merge_ranges([Range | Ranges], []) = merge_ranges(Ranges, [Range]).
+merge_ranges([(Start1, End1) | Ranges1], [(Start2, End2) | Ranges2]) = Ranges =>
+    if (Start1 @> End2)
+        Ranges = merge_ranges(Ranges1, [(Start1, End1), (Start2, End2) | Ranges2])
+    else
+        Ranges = merge_ranges(Ranges1, [(Start2, max(End1, End2)) | Ranges2])
+    end.
+
+run([File]) = NFresh =>
+    [Ranges, _] = split(read_file_lines(File), [""],),
+    Ranges := merge_ranges(sort([parse_range(Range): Range in Ranges])),
+    NFresh = sum([End - Start + 1: (Start, End) in Ranges]).
+
+main =>
+    NFresh = run(["input.txt"]),
+    println(NFresh).
+
+test =>
+    NFresh = run(["test.txt"]),
+    println(NFresh),
+    NFresh = 14.
