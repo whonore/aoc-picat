@@ -1,0 +1,25 @@
+include "../aoc.pi".
+
+table
+beam(Manifold, 1, C) = cond(Manifold[1, C] = 'S', 1, 0).
+beam(Manifold, R, C) = NTimelines, Manifold[R, C] = '.' =>
+    NUp = beam(Manifold, R - 1, C),
+    NLeft = cond(
+        (C - 1 @> 0 && Manifold[R, C - 1] = '^'),
+        beam(Manifold, R - 1, C - 1),
+        0
+    ),
+    NRight = cond(
+        (C + 1 @<= len(Manifold[R]) && Manifold[R, C + 1] = '^'),
+        beam(Manifold, R - 1, C + 1),
+        0
+    ),
+    NTimelines = NUp + NLeft + NRight.
+beam(_, _, _) = 0.
+
+run(File) = NTimelines =>
+    Manifold = {to_array(Line): Line in read_file_lines(File)},
+    LastR = len(Manifold),
+    NTimelines = sum([beam(Manifold, LastR, C): C in 1 .. len(Manifold[LastR])]).
+
+test_expected = 40.
