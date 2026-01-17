@@ -1,0 +1,109 @@
+import util.
+include "../aoc.pi".
+
+% - |
+intersects(line({X11, Y1}, {X12, Y1}), line({X2, Y21}, {X2, Y22})) =>
+    between(min(X11, X12), max(X11, X12), X2),
+    between(min(Y21, Y22), max(Y21, Y22), Y1).
+% | -
+intersects(line({X1, Y11}, {X1, Y12}), line({X21, Y2}, {X22, Y2})) =>
+    intersects($line({X21, Y2}, {X22, Y2}), $line({X1, Y11}, {X1, Y12})).
+
+% L2 in L1
+line_contains(line({X11, Y}, {X12, Y}), line({X21, Y}, {X22, Y})) =>
+    between(min(X11, X12), max(X11, X12), X21),
+    between(min(X11, X12), max(X11, X12), X22).
+line_contains(line({X, Y11}, {X, Y12}), line({X, Y21}, {X, Y22})) =>
+    line_contains($line({Y11, X}, {Y12, X}), $line({Y21, X}, {Y22, X})).
+
+remove_top(line({X1, Y1}, {X2, Y2})) = $line({X1, Y1_}, {X2, Y2_}) =>
+    if (Y1 = Y2)
+        Y1_ = Y1,
+        Y2_ = Y2
+    elseif (Y1 @< Y2)
+        Y1_ = Y1 + 1,
+        Y2_ = Y2
+    else
+        Y2_ = Y2 + 1,
+        Y1_ = Y1
+    end.
+
+remove_bottom(line({X1, Y1}, {X2, Y2})) = $line({X1, Y1_}, {X2, Y2_}) =>
+    if (Y1 = Y2)
+        Y1_ = Y1,
+        Y2_ = Y2
+    elseif (Y1 @> Y2)
+        Y1_ = Y1 - 1,
+        Y2_ = Y2
+    else
+        Y2_ = Y2 - 1,
+        Y1_ = Y1
+    end.
+
+remove_left(line({X1, Y1}, {X2, Y2})) = $line({X1_, Y1}, {X2_, Y2}) =>
+    if (X1 = X2)
+        X1_ = X1,
+        X2_ = X2
+    elseif (X1 @< X2)
+        X1_ = X1 + 1,
+        X2_ = X2
+    else
+        X2_ = X2 + 1,
+        X1_ = X1
+    end.
+
+remove_right(line({X1, Y1}, {X2, Y2})) = $line({X1_, Y1}, {X2_, Y2}) =>
+    if (X1 = X2)
+        X1_ = X1,
+        X2_ = X2
+    elseif (X1 @> X2)
+        X1_ = X1 - 1,
+        X2_ = X2
+    else
+        X2_ = X2 - 1,
+        X1_ = X1
+    end.
+
+rect_in_bounds([], _) => true.
+rect_in_bounds([_], _) => true.
+rect_in_bounds([BPt1, BPt2 | Bounds], R @ rect({RX1, RY1}, {RX2, RY2})) =>
+    BLine = $line(BPt1, BPt2),
+    RTL = {min(RX1, RX2), min(RY1, RY2)},
+    RTR = {max(RX1, RX2), min(RY1, RY2)},
+    RBL = {min(RX1, RX2), max(RY1, RY2)},
+    RBR = {max(RX1, RX2), max(RY1, RY2)},
+    RT = $line(RTL, RTR),
+    RB = $line(RBL, RBR),
+    RL = $line(RTL, RBL),
+    RR = $line(RTR, RBR),
+    if (not (
+        member(RLine, [RT, RB, RL, RR]),
+        (line_contains(RLine, BLine) || line_contains(BLine, RLine)))
+    )
+        not intersects(remove_bottom(BLine), RT),
+        not intersects(remove_top(BLine), RB),
+        not intersects(remove_right(BLine), RL),
+        not intersects(remove_left(BLine), RR)
+    end,
+    rect_in_bounds([BPt2 | Bounds], R).
+
+run(File) = Area =>
+    Pts = [{to_number(V): V in split(Line, ",")}: Line in read_file_lines(File)],
+    Bounds = Pts ++ [head(Pts)],
+    Area = 0,
+    NPts = len(Pts),
+    Rects = sort_down([
+        {$rect({X1, Y1}, {X2, Y2}), CurArea}:
+        I in 1 .. NPts - 1,
+        J in I + 1 .. NPts,
+        {X1, Y1} = Pts[I],
+        {X2, Y2} = Pts[J],
+        CurArea = (abs(X1 - X2) + 1) * (abs(Y1 - Y2) + 1)
+    ], 2),
+    foreach ({R, CurArea} in Rects, break(CurArea @<= Area))
+        if (rect_in_bounds(Bounds, R))
+            Area := CurArea
+        end
+    end.
+
+test_expected = 24.
