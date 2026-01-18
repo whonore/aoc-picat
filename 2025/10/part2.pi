@@ -1,0 +1,48 @@
+import mip.
+include "../aoc.pi".
+
+input(Bs, Js) --> indicators(_), " ", button_schematics(Bs), " ", joltages(Js).
+
+indicators(Ls) --> "[", lights(Ls), "]".
+
+lights([]) --> [].
+lights([L | Ls]) --> light(L), lights(Ls).
+
+light(off) --> ".".
+light(on) --> "#".
+
+button_schematics([B | Bs]) --> button_schematic(B), button_schematics_tail(Bs).
+
+button_schematics_tail([]) --> [].
+button_schematics_tail([B | Bs]) --> " ", button_schematic(B), button_schematics_tail(Bs).
+
+button_schematic(Bs) --> "(", csv(Bs_), ")", { Bs = [to_number(B): B in Bs_] }.
+
+joltages(Js) --> "{", csv(Js_), "}", { Js = [to_number(J): J in Js_] }.
+
+csv([N | Ns]) --> string(N), csv_tail(Ns).
+
+csv_tail([]) --> [].
+csv_tail([N | Ns]) --> ",", string(N), csv_tail(Ns).
+
+string([]) --> [].
+string([X | Xs]) --> [X], string(Xs).
+
+solve_buttons(TargetJoltages, Buttons) = NPresses =>
+    Ns = new_list(len(Buttons)),
+    Ns :: 0 .. max(TargetJoltages),
+    foreach (I in 1 .. len(TargetJoltages))
+        sum([Ns[J] * Buttons[J, I]: J in 1 .. len(Buttons)]) #= TargetJoltages[I]
+    end,
+    NPresses #= sum(Ns),
+    solve([$min(NPresses)], Ns).
+
+run(File) =
+    sum([
+        solve_buttons(to_array(Joltages), Buttons):
+        Line in read_file_lines(File),
+        input(Buttons_, Joltages, Line, []),
+        Buttons = [{cond(membchk(I - 1, Button), 1, 0): I in 1 .. len(Joltages)}: Button in Buttons_]
+    ]).
+
+test_expected = 33.

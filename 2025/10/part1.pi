@@ -1,0 +1,67 @@
+import planner.
+include "../aoc.pi".
+
+input(Ls, Bs) --> indicators(Ls), " ", button_schematics(Bs), " ", joltages(_).
+
+indicators(Ls) --> "[", lights(Ls), "]".
+
+lights([]) --> [].
+lights([L | Ls]) --> light(L), lights(Ls).
+
+light(off) --> ".".
+light(on) --> "#".
+
+button_schematics([B | Bs]) --> button_schematic(B), button_schematics_tail(Bs).
+
+button_schematics_tail([]) --> [].
+button_schematics_tail([B | Bs]) --> " ", button_schematic(B), button_schematics_tail(Bs).
+
+button_schematic(Bs) --> "(", csv(Bs_), ")", { Bs = [to_number(B): B in Bs_] }.
+
+joltages(Js) --> "{", csv(Js_), "}", { Js = [to_number(J): J in Js_] }.
+
+csv([N | Ns]) --> string(N), csv_tail(Ns).
+
+csv_tail([]) --> [].
+csv_tail([N | Ns]) --> ",", string(N), csv_tail(Ns).
+
+string([]) --> [].
+string([X | Xs]) --> [X], string(Xs).
+
+flip(on) = off.
+flip(off) = on.
+
+% TODO: Why doesn't the update version work with plan?
+press_button(Button, Lights) =
+    [cond(membchk(I - 1, Button), flip(Lights[I]), Lights[I]): I in 1 .. len(Lights)].
+%press_button(Button, Lights) = Lights_ =>
+%    Lights_ = Lights,
+%    foreach (I in Button)
+%        Lights_[I + 1] := flip(Lights[I + 1])
+%    end.
+
+final({Lights, GoalLights, _}) => Lights = GoalLights.
+
+action(S0, S1, Action, ActionCost) ?=>
+    S0 = {Lights, GoalLights, Buttons},
+    S1 = {Lights_, GoalLights, Buttons},
+    member(Button, Buttons),
+    Lights_ = press_button(Button, Lights),
+    Action = $press(Button),
+    ActionCost = 1.
+
+run(File) = TotalPresses =>
+    Inputs = [
+        (Lights, Buttons):
+        Line in read_file_lines(File),
+        input(Lights, Buttons, Line, [])
+    ],
+    NPresses = [
+        Cost:
+        (GoalLights, Buttons) in Inputs,
+        InitLights = new_list(len(GoalLights), off),
+        best_plan({InitLights, GoalLights, Buttons}, _Plan, Cost)
+    ],
+    TotalPresses = sum(NPresses).
+
+test_expected = 7.
