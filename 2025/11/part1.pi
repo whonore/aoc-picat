@@ -6,6 +6,9 @@ count_paths(Graph, From, To) =
     sum([count_paths(Graph, Next, To): Next in get(Graph, From)]).
 
 run(File) = NPaths =>
+    if (File == "test.txt")
+        File := "test1.txt"
+    end,
     Graph = new_map([
         In = Outs:
         Line in read_file_lines(File),

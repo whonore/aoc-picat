@@ -1,0 +1,24 @@
+import util.
+include "../aoc.pi".
+
+table(+, +, +, nt)
+count_paths(To, To, [], Graph) = 1.
+count_paths(To, To, _, Graph) = 0.
+count_paths(From, To, With, Graph) = NPaths =>
+    if (select(From, With, With_))
+        With := With_
+    end,
+    NPaths = sum([count_paths(Next, To, With, Graph): Next in get(Graph, From)]).
+
+run(File) = NPaths =>
+    if (File == "test.txt")
+        File := "test2.txt"
+    end,
+    Graph = new_map([
+        In = Outs:
+        Line in read_file_lines(File),
+        [In | Outs] = split(Line, ": ")
+    ]),
+    NPaths = count_paths("svr", "out", ["dac", "fft"], Graph).
+
+test_expected = 2.
