@@ -1,0 +1,16 @@
+import util.
+include "../aoc.pi".
+
+count_paths(Graph, To, To) = 1.
+count_paths(Graph, From, To) =
+    sum([count_paths(Graph, Next, To): Next in get(Graph, From)]).
+
+run(File) = NPaths =>
+    Graph = new_map([
+        In = Outs:
+        Line in read_file_lines(File),
+        [In | Outs] = split(Line, ": ")
+    ]),
+    NPaths = count_paths(Graph, "you", "out").
+
+test_expected = 5.
