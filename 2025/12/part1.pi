@@ -1,0 +1,35 @@
+import util.
+include "../aoc.pi".
+
+parse_region(Region) = $region(W, H, NShapes) =>
+    [Dim | NShapes] = split(Region),
+    NShapes := [to_number(N): N in NShapes],
+    [W, H] = split(rstrip(Dim, ":"), "x"),
+    W := to_number(W),
+    H := to_number(H).
+
+area(Shape) = sum([sum([1: X in Row, X == '#']): Row in Shape]).
+
+total_area_fits(region(W, H, NShapes), Areas) =>
+    RegionArea = W * H,
+    ShapeArea = sum([N * Area: {N, Area} in zip(NShapes, Areas)]),
+    println(RegionArea),
+    println(ShapeArea),
+    ShapeArea @<= RegionArea.
+
+% Naive approach that just checks if the shapes could ever fit even with
+% perfect interlocking. This turns out to be sufficient for the main input, but
+% not the test case.
+satisfiable(Region, Areas) =>
+    total_area_fits(Region, Areas).
+
+run(File) = NSatified =>
+    Input = split(read_file_lines(File), [""]),
+    once append(Shapes, [Regions], Input),
+    Shapes := [Shape: [_ | Shape] in Shapes],
+    Regions := [parse_region(Region): Region in Regions],
+    Areas = [area(Shape): Shape in Shapes],
+    println(Regions),
+    NSatified = len([Region: Region in Regions, satisfiable(Region, Areas)]).
+
+test_expected = 2.
